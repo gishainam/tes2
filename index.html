@@ -6,42 +6,11 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="./resources/ol.css">
-        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-        <link rel="stylesheet" href="./resources/ol-layerswitcher.css">
-        <link rel="stylesheet" href="./resources/qgis2web.css">
-<style>
-.search-layer {
-  top: 65px;
-  left: .5em;
-}
-.ol-touch .search-layer {
-  top: 80px;
-}
-</style>
-        <style>
-        html, body {
-            background-color: #ffffff;
-        }
-        .ol-control button {
-            background-color: #f8f8f8 !important;
-            color: #000000 !important;
-            border-radius: 0px !important;
-        }
-        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {
-            background-color: rgba(255,255,255,.4) !important;
-            padding: 3px !important;
-        }
-        .ol-scale-line {
-            background: none !important;
-        }
-        .ol-scale-line-inner {
-            border: 2px solid #f8f8f8 !important;
-            border-top: none !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            color: black !important;
-        }
-        </style>
+        <link rel="stylesheet" href="mapbox/mapbox-gl.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="mapbox/mapbox-gl-generic-geocoder.css">
+        <link rel="stylesheet" href="./mapbox/measure.css">
         <style>
         #map {
             width: 1516px;
@@ -52,198 +21,138 @@
     </head>
     <body>
         <div id="map">
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
-            </div>
+            <nav id="menu"></nav>
+              <div id="distance" class="distance-container"></div>
         </div>
-        <script src="resources/qgis2web_expressions.js"></script>
-        <script src="resources/polyfills.js"></script>
-        <script src="./resources/functions.js"></script>
-        <script src="./resources/ol.js"></script>
-        <script src="./resources/ol-layerswitcher.js"></script>
-        <script src="layers/1_1.js"></script>
-        <script src="styles/1_1_style.js"></script>
-        <script src="./layers/layers.js" type="text/javascript"></script> 
-        <script src="./resources/Autolinker.min.js"></script>
-        <script src="./resources/qgis2web.js"></script>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="./mapbox/mapbox-gl.js"></script>
+        <script src="mapbox/mapbox-gl-generic-geocoder.min.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/1_1.js"></script>
+<script src="./mapbox/style.js"></script>
+<script src="./js/Autolinker.min.js"></script>
+<script>
+var map = new mapboxgl.Map({
+ container: 'map',
+ style: styleJSON,
+ center: [108.9773509819706,12.228097284726392],
+ zoom: 17,
+ bearing: 360.0,
+ attributionControl: false
+});
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+map.addControl(new mapboxgl.AttributionControl({
+    customAttribution: '<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://github.com/mapbox/mapbox-gl-js" target="_blank">Mapbox GL JS</a> &middot; <a href="https://qgis.org" target="_blank">QGIS</a>',
+    compact: false
+}));
+var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+
+map.on('click', 'lyr_1_1_0', function (e) {
+    var description = '<table>\
+                    <tr>\
+                        <th scope="row">Layer</th>\
+                        <td>' + (e.features[0].properties['Layer'] !== null ? autolinker.link(e.features[0].properties['Layer'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['PaperSpace'] !== null ? autolinker.link(e.features[0].properties['PaperSpace'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['SubClasses'] !== null ? autolinker.link(e.features[0].properties['SubClasses'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['Linetype'] !== null ? autolinker.link(e.features[0].properties['Linetype'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['EntityHand'] !== null ? autolinker.link(e.features[0].properties['EntityHand'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (e.features[0].properties['Text'] !== null ? autolinker.link(e.features[0].properties['Text'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>'
+
+    new mapboxgl.Popup()
+        .setLngLat(e.lngLat)
+        .setHTML(description)
+        .addTo(map);
+});
+
+// Change the cursor to a pointer when the mouse is over the places layer.
+map.on('mouseenter', 'lyr_1_1_0', function () {
+    map.getCanvas().style.cursor = 'pointer';
+});
+
+// Change it back to a pointer when it leaves.
+map.on('mouseleave', 'lyr_1_1_0', function () {
+    map.getCanvas().style.cursor = '';
+});
+    var toggleableLayerIds = ['lyr_1_1_0', '1','lyr_GoogleSatellite_0_0', 'Google Satellite'];
+
+    for (var i = 0; i < toggleableLayerIds.length; i=i+2) {
+        var id = toggleableLayerIds[i];
+        var layerName = toggleableLayerIds[i+1]
+
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.layer = id;
+        link.textContent = layerName;
+
+        link.onclick = function (e) {
+            var clickedLayer = this.layer;
+            e.preventDefault();
+            e.stopPropagation();
+
+            var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+            if (typeof visibility === 'undefined' || visibility == 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = 'active';
+                map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+            }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+    }
+        var geocodeNominatimRequest = function(query, mapBounds, options) {
+        var params = { format: "json", q: query, limit: options.limit };
+        var urlParams = new URLSearchParams(Object.entries(params));
+
+        return fetch("http://nominatim.openstreetmap.org/search?" + urlParams)
+            .then(function(response) {
+                if(response.ok) {
+                    return response.json();
+                } else {
+                    return [];
+                }
+            }).then(function(json) {
+                return json.map(function(result) {
+                    return {
+                        name: result.display_name,
+                        lat: result.lat,
+                        lon: result.lon,
+                        bbox: [result.boundingbox[2], result.boundingbox[0],
+                               result.boundingbox[3], result.boundingbox[1]]
+                    };
+                });
+            });
+        };
+
+        map.addControl(new MapboxGenericGeocoder({}, geocodeNominatimRequest));
+</script>
+        <script src="./mapbox/measureMetric.js"></script>
+        <script src="./mapbox/turf.min.js"></script>
+        <script>
+        map.addControl(
+            new mapboxgl.GeolocateControl({
+                positionOptions: {
+                    enableHighAccuracy: true
+                },
+                trackUserLocation: true
+            })
+        );
+        </script>
     </body>
 </html>
-public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLocationButtonClickListener,
-      GoogleMap.OnMyLocationClickListener,
-      OnMapReadyCallback,
-      ActivityCompat.OnRequestPermissionsResultCallback {
-
-  /**
-  * Request code for location permission request.
-  *
-  * @see #onRequestPermissionsResult(int, String[], int[])
-  */
-  private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
-  /**
-  * Flag indicating whether a requested permission has been denied after returning in
-  * {@link #onRequestPermissionsResult(int, String[], int[])}.
-  */
-  private boolean mPermissionDenied = false;
-
-  private GoogleMap mMap;
-
-  private PlaceAutocompleteFragment placeAutocompleteFragment;
-
-  Marker marker;
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
-      setContentView(R.layout.activity_maps);
-
-      SupportMapFragment mapFragment =
-              (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-      mapFragment.getMapAsync(this);
-
-
-      placeAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-      // placeAutocompleteFragment.setFilter(new AutocompleteFilter.Builder().setCountry("ID").build());
-      placeAutocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-          @Override
-          public void onPlaceSelected(Place place) {
-              final LatLng latLngLoc = place.getLatLng();
-
-              if (marker != null) {
-                  marker.remove();
-              }
-              marker = mMap.addMarker(new MarkerOptions().position(latLngLoc).title(place.getName().toString()));
-              mMap.moveCamera(CameraUpdateFactory.newLatLng(latLngLoc));
-              mMap.animateCamera(CameraUpdateFactory.zoomTo(12), 2000, null);
-          }
-
-          @Override
-          public void onError(Status status) {
-              Toast.makeText(MapsActivity.this, "" + status.toString(), Toast.LENGTH_SHORT).show();
-          }
-      });
-
-
-  }
-
-
-  @Override
-  public void onMapReady(GoogleMap googleMap) {
-      mMap = googleMap;
-
-      mMap.setOnMyLocationButtonClickListener(this);
-      mMap.setOnMyLocationClickListener(this);
-      enableMyLocation();
-
-
-      mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-          @Override
-          public void onMapClick(LatLng point) {
-
-              // Creating a marker
-              MarkerOptions markerOptions = new MarkerOptions();
-
-              // Setting the position for the marker
-              markerOptions.position(point);
-
-
-              // changing the marker title
-              double lat = point.latitude;
-              double lng = point.longitude;
-              Geocoder gc = new Geocoder(MapsActivity.this);
-
-              List<Address> list = null;
-              try {
-                  list = gc.getFromLocation(lat, lng, 1);
-              } catch (IOException e) {
-                  e.printStackTrace();
-              }
-              Address address = list.get(0);
-
-              String sublocality = address.getSubLocality();
-
-
-              // Setting the title for the marker.
-              // This will be displayed on taping the marker
-              markerOptions.title(sublocality);
-
-              // Clears the previously touched position
-              mMap.clear();
-
-              // Animating to the touched position
-              mMap.animateCamera(CameraUpdateFactory.newLatLng(point));
-
-              // Placing a marker on the touched position
-              mMap.addMarker(markerOptions);
-
-          }
-      });
-
-
-  }
-
-  private void enableMyLocation() {
-
-
-      if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-              != PackageManager.PERMISSION_GRANTED) {
-          // Permission to access the location is missing.
-          PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
-                  Manifest.permission.ACCESS_FINE_LOCATION, true);
-      } else if (mMap != null) {
-          // Access to the location has been granted to the app.
-          mMap.setMyLocationEnabled(true);
-      }
-
-  }
-
-  @Override
-  public boolean onMyLocationButtonClick() {
-      Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-      // Return false so that we don't consume the event and the default behavior still occurs
-      // (the camera animates to the user's current position).
-      return false;
-  }
-
-  @Override
-  public void onMyLocationClick(@NonNull Location location) {
-      Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
-  }
-
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                        @NonNull int[] grantResults) {
-
-      if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-          return;
-      }
-
-      if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-              Manifest.permission.ACCESS_FINE_LOCATION)) {
-          // Enable the my location layer if the permission has been granted.
-          enableMyLocation();
-      } else {
-          // Display the missing permission error dialog when the fragments resume.
-          mPermissionDenied = true;
-      }
-  }
-
-  @Override
-  protected void onResumeFragments() {
-      super.onResumeFragments();
-      if (mPermissionDenied) {
-          // Permission was not granted, display error dialog.
-          showMissingPermissionError();
-          mPermissionDenied = false;
-      }
-  }
-
-  /**
-  * Displays a dialog with error message explaining that the location permission is missing.
-  */
-  private void showMissingPermissionError() {
-      PermissionUtils.PermissionDeniedDialog
-              .newInstance(true).show(getSupportFragmentManager(), "dialog");
-  }
-}
