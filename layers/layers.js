@@ -2,7 +2,7 @@ var wms_layers = [];
 
 
         var lyr_GoogleSatellite_0 = new ol.layer.Tile({
-            'title': 'Google Satellite',
+            'title': 'Vi tri',
             'type': 'base',
             'opacity': 1.000000,
             
@@ -14,7 +14,7 @@ var wms_layers = [];
         });
 var format_1_1 = new ol.format.GeoJSON();
 var features_1_1 = format_1_1.readFeatures(json_1_1, 
-            {dataProjection: 'EPSG:4326', featureProjection: 'EPSG:3857'});
+            {dataProjection: 'EPSG:3450', featureProjection: 'EPSG:3450'});
 var jsonSource_1_1 = new ol.source.Vector({
     attributions: ' ',
 });
