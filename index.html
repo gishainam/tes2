@@ -1,6 +1,12 @@
 <!doctype html>
 <html lang="en">
-    <head>
+
+    
+	<title>
+	LANGNHAT</title>
+	
+	
+	<head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
@@ -9,15 +15,23 @@
         <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
         <style>
-        #map {
-            width: 1483px;
-            height: 788px;
+        html, body, #map {
+            width: 500px;
+            height: 1200px;
+            padding: 0;
+            margin: 0;
         }
         </style>
         <title></title>
     </head>
-    <body>
+    
+	<body>
+		<H1>
+			LANG NHAT
+		
+		<H1>
         <div id="map">
+		
         </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
@@ -32,13 +46,16 @@
         <script>
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[12.224160221625565,108.9727370925678],[12.230619628718248,108.98506601452266]]);
+        })
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
         var bounds_group = new L.featureGroup([]);
         function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
         }
         map.createPane('pane_GoogleSatellite_0');
         map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
@@ -105,7 +122,7 @@
         bounds_group.addLayer(layer_1_1);
         map.addLayer(layer_1_1);
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/1_1.png" /> 1': layer_1_1,"Google Satellite": layer_GoogleSatellite_0,},{collapsed:false}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/1_1.png" /> 1': layer_1_1,"vi tri": layer_GoogleSatellite_0,},{collapsed:false}).addTo(map);
         setBounds();
         </script>
     </body>
