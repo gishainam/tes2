@@ -10,8 +10,8 @@
         <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
         <style>
         #map {
-            width: 100px;
-            height: 200px;
+            width: 1483px;
+            height: 788px;
         }
         </style>
         <title></title>
@@ -105,7 +105,7 @@
         bounds_group.addLayer(layer_1_1);
         map.addLayer(layer_1_1);
         var baseMaps = {};
-        L.control.layers(baseMaps,{'<img src="legend/1_1.png" /> 1': layer_1_1,"Google Satellite": layer_GoogleSatellite_0,}).addTo(map);
+        L.control.layers(baseMaps,{'<img src="legend/1_1.png" /> 1': layer_1_1,"Google Satellite": layer_GoogleSatellite_0,},{collapsed:false}).addTo(map);
         setBounds();
         </script>
     </body>
