@@ -8,11 +8,10 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="mapbox/mapbox-gl.css">
         <link rel="stylesheet" href="css/qgis2web.css">
-        <link rel="stylesheet" href="css/leaflet-search.css">
         <style>
         #map {
             width: 1516px;
-            height: 788px;
+            height: 424px;
         }
         </style>
         <title></title>
@@ -24,7 +23,6 @@
         </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="./mapbox/mapbox-gl.js"></script>
-        <script src="js/leaflet-search.js"></script>
         <script src="data/1_1.js"></script>
 <script src="./mapbox/style.js"></script>
 <script src="./js/Autolinker.min.js"></script>
@@ -32,8 +30,8 @@
 var map = new mapboxgl.Map({
  container: 'map',
  style: styleJSON,
- center: [108.9773509819706,12.228097284726392],
- zoom: 17,
+ center: [108.97956538558522,12.227736246637708],
+ zoom: 16,
  bearing: 360.0,
  attributionControl: false
 });
@@ -47,8 +45,7 @@ var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 map.on('click', 'lyr_1_1_0', function (e) {
     var description = '<table>\
                     <tr>\
-                        <th scope="row">Layer</th>\
-                        <td>' + (e.features[0].properties['Layer'] !== null ? autolinker.link(e.features[0].properties['Layer'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2">' + (e.features[0].properties['Layer'] !== null ? autolinker.link(e.features[0].properties['Layer'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2">' + (e.features[0].properties['PaperSpace'] !== null ? autolinker.link(e.features[0].properties['PaperSpace'].toLocaleString()) : '') + '</td>\
