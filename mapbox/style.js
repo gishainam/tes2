@@ -38,7 +38,7 @@ var styleJSON = {
             "type": "line",
             "source": "1_1",
             "layout": {},
-            "paint": {'line-width': 0.9285714285714285, 'line-opacity': 1.0, 'line-color': '#729b6f'}
+            "paint": {'line-width': 0.9285714285714285, 'line-opacity': 1.0, 'line-color': '#beb297'}
         }
 ],
 }

@@ -8,10 +8,11 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <link rel="stylesheet" href="mapbox/mapbox-gl.css">
         <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
         <style>
         #map {
-            width: 1516px;
-            height: 424px;
+            width: 1483px;
+            height: 788px;
         }
         </style>
         <title></title>
@@ -23,6 +24,7 @@
         </div>
         <script src="js/qgis2web_expressions.js"></script>
         <script src="./mapbox/mapbox-gl.js"></script>
+        <script src="js/leaflet-search.js"></script>
         <script src="data/1_1.js"></script>
 <script src="./mapbox/style.js"></script>
 <script src="./js/Autolinker.min.js"></script>
@@ -30,7 +32,7 @@
 var map = new mapboxgl.Map({
  container: 'map',
  style: styleJSON,
- center: [108.97956538558522,12.227736246637708],
+ center: [108.97887234385037,12.227946757726142],
  zoom: 16,
  bearing: 360.0,
  attributionControl: false
@@ -45,7 +47,7 @@ var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
 map.on('click', 'lyr_1_1_0', function (e) {
     var description = '<table>\
                     <tr>\
-                        <td colspan="2">' + (e.features[0].properties['Layer'] !== null ? autolinker.link(e.features[0].properties['Layer'].toLocaleString()) : '') + '</td>\
+                        <td colspan="2"><strong>Layer</strong><br />' + (e.features[0].properties['Layer'] !== null ? autolinker.link(e.features[0].properties['Layer'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
                         <td colspan="2">' + (e.features[0].properties['PaperSpace'] !== null ? autolinker.link(e.features[0].properties['PaperSpace'].toLocaleString()) : '') + '</td>\
@@ -79,7 +81,37 @@ map.on('mouseenter', 'lyr_1_1_0', function () {
 map.on('mouseleave', 'lyr_1_1_0', function () {
     map.getCanvas().style.cursor = '';
 });
-</script>
+    var toggleableLayerIds = ['lyr_1_1_0', '1','lyr_GoogleSatellite_0_0', 'Google Satellite'];
+
+    for (var i = 0; i < toggleableLayerIds.length; i=i+2) {
+        var id = toggleableLayerIds[i];
+        var layerName = toggleableLayerIds[i+1]
+
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.layer = id;
+        link.textContent = layerName;
+
+        link.onclick = function (e) {
+            var clickedLayer = this.layer;
+            e.preventDefault();
+            e.stopPropagation();
+
+            var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+            if (typeof visibility === 'undefined' || visibility == 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = 'active';
+                map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+            }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+    }</script>
         <script>
         map.addControl(
             new mapboxgl.GeolocateControl({
