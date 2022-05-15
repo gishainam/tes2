@@ -31,7 +31,7 @@ lyr_GoogleSatellite_0.setVisible(true);lyr_1_1.setVisible(true);
 var layersList = [lyr_GoogleSatellite_0,lyr_1_1];
 lyr_1_1.set('fieldAliases', {'Layer': 'Layer', 'PaperSpace': 'PaperSpace', 'SubClasses': 'SubClasses', 'Linetype': 'Linetype', 'EntityHand': 'EntityHand', 'Text': 'Text', });
 lyr_1_1.set('fieldImages', {'Layer': '', 'PaperSpace': '', 'SubClasses': '', 'Linetype': '', 'EntityHand': '', 'Text': '', });
-lyr_1_1.set('fieldLabels', {'Layer': 'inline label', 'PaperSpace': 'inline label', 'SubClasses': 'inline label', 'Linetype': 'inline label', 'EntityHand': 'inline label', 'Text': 'inline label', });
+lyr_1_1.set('fieldLabels', {'Layer': 'no label', 'PaperSpace': 'no label', 'SubClasses': 'no label', 'Linetype': 'no label', 'EntityHand': 'no label', 'Text': 'no label', });
 lyr_1_1.on('precompose', function(evt) {
     evt.context.globalCompositeOperation = 'normal';
 });
